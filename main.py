@@ -12,7 +12,7 @@ logger = logging.getLogger('waitress')
 handler = RotatingFileHandler(filename=__name__+'.log', mode='a', maxBytes=20 * 1024 * 1024, backupCount=5)
 handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(funcName)s (%(lineno)d) %(message)s'))
 logger.addHandler(handler)
-logger.setLevel(logging.ERROR)
+logger.setLevel(logging.INFO)
 
 # SETUP MAIN ENTRY
 if __name__ == '__main__':
@@ -42,6 +42,8 @@ def create_response(response_payload):
 @api.route('/api/v1/viber-webhook-rpbot/events', methods=['POST'])
 def process_event():
     try:
+        payload = request.json
+        logger.info(payload)
         return create_response({}), 200
     except Exception as e:
         logger.exception(e)
