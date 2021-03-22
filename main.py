@@ -44,7 +44,7 @@ def create_response(response_payload):
 def process_event():
     try:
         payload = request.json
-        logger.info(json.dumps(payload, indent=3))
+        logger.info("REQUEST PAYLOAD>>>\n"+json.dumps(payload, indent=3))
         return create_response({}), 200
     except Exception as e:
         logger.exception(e)
