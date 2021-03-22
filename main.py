@@ -4,6 +4,7 @@ from paste.translogger import TransLogger
 from logging.handlers import RotatingFileHandler
 import logging
 import os
+import json
 
 api = Flask(__name__)
 
@@ -43,7 +44,7 @@ def create_response(response_payload):
 def process_event():
     try:
         payload = request.json
-        logger.info(payload)
+        logger.info(json.dumps(payload, indent=3))
         return create_response({}), 200
     except Exception as e:
         logger.exception(e)
