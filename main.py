@@ -63,9 +63,9 @@ def process_event():
         # DEFAULT RESPONSE #
         if sender is not None and sender.get('id', None) is not None:
             sender_id = sender.get('id')
-            user_details = get_user_details(sender_id)
-            user_name = user_details['user']['name'] if user_details['status'] == 0 else "yo"
-            send_text_message(sender_id, f'Hey {user_name}, how may I help you?')
+            account_info = get_account_info()
+            account_name = account_info['name'] if account_info['status'] == 0 else "yo"
+            send_text_message(sender_id, f'Hey {account_name}, how may I help you?')
 
         # ---------------------- #
 
@@ -97,6 +97,13 @@ def get_user_details(user_id):
     get_user_details_json_response = get_user_details_response.json()
     log_request("GET USER DETAILS", get_user_details_json_response)
     return get_user_details_json_response
+
+
+def get_account_info():
+    get_account_info_response = requests.post('https://chatapi.viber.com/pa/get_account_info', json={}, headers=viber_request_headers)
+    get_account_info_json_response = get_account_info_response.json()
+    log_request("GET ACCOUNT INFO", get_account_info_json_response)
+    return get_account_info_json_response
 
 
 def log_request(request_id, payload):
