@@ -34,6 +34,16 @@ if __name__ == '__main__':
     except Exception as ex:
         logger.exception(ex)
 
+# GLOBAL VARIABLES
+keyboard_options = [
+    {
+        "ActionType": "reply",
+        "ActionBody": "covid_contact_tracing",
+        "Text": "Submit COVID Contact Tracing Info",
+        "TextSize": "regular"
+    }
+]
+
 
 @api.route(request_uri, methods=['OPTIONS'])
 def pre_flight():
@@ -62,14 +72,11 @@ def process_event():
         event = payload.get('event', None)
         sender = payload.get('sender', None)
         message = payload.get('message', None)
-        keyboard_options = [
-            "covid contact tracing"
-        ]
 
         # DEFAULT RESPONSE #
         if event is not None and sender is not None and sender.get('id', None) is not None:
             sender_id = sender.get('id')
-            if message is not None and any([option != message['text'] for option in keyboard_options]):
+            if message is not None and any([option['ActionBody'] != message['text'] for option in keyboard_options]):
                 send_default_response(sender_id)
 
         return create_response({
@@ -81,7 +88,7 @@ def process_event():
 
 # HELPER FUNCTIONS
 def send_default_response(receiver_id):
-    send_text_message(receiver_id, {
+    send_text_message({
         "receiver": receiver_id,
         "min_api_version": 1,
         "type": "text",
@@ -90,19 +97,12 @@ def send_default_response(receiver_id):
         "keyboard": {
             "Type": "keyboard",
             "DefaultHeight": True,
-            "Buttons": [
-                {
-                    "ActionType": "reply",
-                    "ActionBody": "covid contact tracing",
-                    "Text": "Submit Contact Tracing Info",
-                    "TextSize": "regular"
-                }
-            ]
+            "Buttons": keyboard_options
         }
     })
 
 
-def send_text_message(receiver_id, send_text_request):
+def send_text_message(send_text_request):
     log_payload("SEND TEXT MESSAGE", send_text_request)
     requests.post('https://chatapi.viber.com/pa/send_message', json=send_text_request, headers=viber_request_headers)
 
@@ -126,4 +126,3 @@ def get_account_info():
 
 def log_payload(payload_id, payload):
     logger.info(f'{payload_id}>>>\n{json.dumps(payload, indent=3)}')
-
