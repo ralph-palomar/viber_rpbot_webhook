@@ -69,7 +69,7 @@ def process_event():
         # DEFAULT RESPONSE #
         if event is not None and sender is not None and sender.get('id', None) is not None:
             sender_id = sender.get('id')
-            if message is not None and not any(keyboard_options, message['text']):
+            if message is not None and any([option != message['text'] for option in keyboard_options]):
                 send_default_response(sender_id)
 
         return create_response({
