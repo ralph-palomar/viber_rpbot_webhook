@@ -63,9 +63,9 @@ def process_event():
         # DEFAULT RESPONSE #
         if sender is not None and sender.get('id', None) is not None:
             sender_id = sender.get('id')
-            account_info = get_account_info()
-            account_name = account_info['name'] if account_info['status'] == 0 else "yo"
-            send_text_message(sender_id, f'Hey {account_name}, how may I help you?')
+            user_details = get_user_details(sender_id)
+            user_name = user_details['name'] if user_details['status'] == 0 else "yo"
+            send_text_message(sender_id, f'Hey {user_name}, how may I help you?')
 
         # ---------------------- #
 
