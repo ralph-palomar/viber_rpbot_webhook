@@ -59,12 +59,18 @@ def process_event():
         log_payload("ORIGINATED FROM VIBER", payload)
 
         # APPLICATION LOGIC HERE #
+        event = payload.get('event', None)
         sender = payload.get('sender', None)
+        message = payload.get('message', None)
+        keyboard_options = [
+            "covid contact tracing"
+        ]
+
         # DEFAULT RESPONSE #
-        if sender is not None and sender.get('id', None) is not None:
+        if event is not None and sender is not None and sender.get('id', None) is not None:
             sender_id = sender.get('id')
-            send_default_response(sender_id)
-        # ---------------- #
+            if message is not None and not any(keyboard_options, message['text']):
+                send_default_response(sender_id)
 
         return create_response({
             "status": "success"
