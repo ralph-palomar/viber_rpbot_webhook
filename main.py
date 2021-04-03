@@ -74,15 +74,16 @@ def process_event():
 
 
 # HELPER FUNCTIONS
-def send_text_message(receiver_id, text_message):
+def send_text_message(receiver_id, text_message, keyboard={}):
     send_text_request = {
         "receiver": receiver_id,
         "min_api_version": 1,
         "type": "text",
         "text": text_message,
-        "tracking_data": uuid.uuid4().hex
+        "tracking_data": uuid.uuid4().hex,
+        "keyboard": keyboard
     }
-    log_request("SEND TEXT MESSAGE", send_text_request)
+    log_request("SEND TEXT MESSAGE RESPONSE", send_text_request)
     requests.post('https://chatapi.viber.com/pa/send_message', json=send_text_request, headers=viber_request_headers)
 
 
