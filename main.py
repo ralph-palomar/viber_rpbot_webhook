@@ -74,7 +74,7 @@ def send_text_message(receiver_id, text_message):
             "name": "rpbot"
         },
         "text": text_message,
-        "tracking_data": uuid.uuid4()
+        "tracking_data": uuid.uuid4().hex
     }
     requests.post('https://chatapi.viber.com/pa/send_message', json=send_text_request)
 
