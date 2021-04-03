@@ -35,7 +35,7 @@ if __name__ == '__main__':
         logger.exception(ex)
 
 # GLOBAL VARIABLES
-keyboard_options = [
+default_keyboard_options = [
     {
         "ActionType": "reply",
         "ActionBody": "covid_contact_tracing",
@@ -76,12 +76,16 @@ def process_event():
         # DEFAULT RESPONSE #
         if event is not None and sender is not None and sender.get('id', None) is not None:
             sender_id = sender.get('id')
-            if message is not None and any([option['ActionBody'] != message['text'] for option in keyboard_options]):
+            if message is not None and any([option['ActionBody'] != message['text'] for option in default_keyboard_options]):
                 send_default_response(sender_id)
+            else:
+                if message['text'] == "covid_contact_tracing":
+                    send_plain_text_message(sender_id, "Test Contact Tracing")
 
         return create_response({
             "status": "success"
         }), 200
+
     except Exception as e:
         logger.exception(e)
 
@@ -97,8 +101,18 @@ def send_default_response(receiver_id):
         "keyboard": {
             "Type": "keyboard",
             "DefaultHeight": True,
-            "Buttons": keyboard_options
+            "Buttons": default_keyboard_options
         }
+    })
+
+
+def send_plain_text_message(receiver_id, text_message):
+    send_text_message({
+        "receiver": receiver_id,
+        "min_api_version": 1,
+        "type": "text",
+        "text": text_message,
+        "tracking_data": uuid.uuid4().hex,
     })
 
 
