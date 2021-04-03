@@ -5,6 +5,7 @@ from logging.handlers import RotatingFileHandler
 import logging
 import os
 import json
+import uuid
 
 api = Flask(__name__)
 
@@ -50,6 +51,8 @@ def process_event():
         logger.info("REQUEST PAYLOAD>>>\n"+json.dumps(payload, indent=3))
 
         # APPLICATION LOGIC HERE #
+        # DEFAULT RESPONSE #
+        send_text_message(payload.sender.id, 'Hi, how may I help you?')
 
         # ---------------------- #
 
@@ -58,3 +61,17 @@ def process_event():
         }), 200
     except Exception as e:
         logger.exception(e)
+
+
+# HELPER FUNCTIONS
+def send_text_message(receiver_id, text_message):
+    send_text_request = {
+        "receiver": receiver_id,
+        "type": "text",
+        "sender": {
+            "name": "rpbot"
+        },
+        "text": text_message,
+        "tracking_data": uuid.uuid4()
+    }
+
