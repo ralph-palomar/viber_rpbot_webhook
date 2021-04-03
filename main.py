@@ -8,6 +8,9 @@ import json
 
 api = Flask(__name__)
 
+# SETUP REQUEST PATH
+request_uri = '/api/v1/viber-webhook-rpbot/events'
+
 # SETUP LOGGERS
 logger = logging.getLogger('waitress')
 handler = RotatingFileHandler(filename=__name__+'.log', mode='a', maxBytes=20 * 1024 * 1024, backupCount=5)
@@ -23,8 +26,8 @@ if __name__ == '__main__':
         logger.exception(ex)
 
 
-@api.route('/api/v1/viber-webhook-rpbot/events', methods=['OPTIONS'])
-def preflight():
+@api.route(request_uri, methods=['OPTIONS'])
+def pre_flight():
     return create_response({}), 200
 
 
@@ -33,18 +36,25 @@ def create_response(response_payload):
         response = jsonify(response_payload)
         response.headers['Access-Control-Allow-Origin'] = os.environ['ALLOWED_ORIGIN']
         response.headers['Access-Control-Allow-Headers'] = 'X-Viber-Auth-Token, Authorization, JWT, Overwrite, Destination, Content-Type, Depth, User-Agent, Translate, Range, Content-Range, Timeout, X-File-Size, X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control, Location, Lock-Token, If'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS, POST, PUT, DELETE'
+        response.headers['Access-Control-Allow-Methods'] = 'OPTIONS, GET, POST, PUT, PATCH, DELETE'
         response.headers['Access-Control-Max-Age'] = 3600
         return response
     except Exception as e:
         logger.exception(e)
 
 
-@api.route('/api/v1/viber-webhook-rpbot/events', methods=['POST'])
+@api.route(request_uri, methods=['POST'])
 def process_event():
     try:
         payload = request.json
         logger.info("REQUEST PAYLOAD>>>\n"+json.dumps(payload, indent=3))
-        return create_response({}), 200
+
+        # APPLICATION LOGIC HERE #
+
+        # ---------------------- #
+
+        return create_response({
+            "status": "success"
+        }), 200
     except Exception as e:
         logger.exception(e)
