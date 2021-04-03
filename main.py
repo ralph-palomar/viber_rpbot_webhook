@@ -56,7 +56,7 @@ def create_response(response_payload):
 def process_event():
     try:
         payload = request.json
-        log_request("ORIGINAL REQUEST", payload)
+        log_request("ORIGINATED FROM VIBER", payload)
 
         # APPLICATION LOGIC HERE #
         sender = payload.get('sender', None)
