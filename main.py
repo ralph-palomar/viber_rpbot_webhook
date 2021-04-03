@@ -15,7 +15,7 @@ request_uri = '/api/v1/viber-webhook-rpbot/events'
 
 # SETUP LOGGERS
 logger = logging.getLogger('waitress')
-handler = RotatingFileHandler(filename=__name__+'.log', mode='a', maxBytes=20 * 1024 * 1024, backupCount=5)
+handler = RotatingFileHandler(filename=f'{__name__}.log', mode='a', maxBytes=20 * 1024 * 1024, backupCount=5)
 handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(funcName)s (%(lineno)d) %(message)s'))
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
@@ -49,12 +49,13 @@ def create_response(response_payload):
 def process_event():
     try:
         payload = request.json
-        logger.info("REQUEST PAYLOAD>>>\n"+json.dumps(payload, indent=3))
+        log_request("ORIGINAL REQUEST", payload)
 
         # APPLICATION LOGIC HERE #
-        sender_id = payload['sender']['id']
+        sender = payload.get('sender', None)
         # DEFAULT RESPONSE #
-        send_text_message(sender_id, 'Hi, how may I help you?')
+        if sender is not None and sender.get('id', None) is not None:
+            send_text_message(sender.get('id'), 'Hi, how may I help you?')
 
         # ---------------------- #
 
@@ -76,5 +77,10 @@ def send_text_message(receiver_id, text_message):
         "text": text_message,
         "tracking_data": uuid.uuid4().hex
     }
+    log_request("SEND TEXT REQUEST", send_text_request)
     requests.post('https://chatapi.viber.com/pa/send_message', json=send_text_request)
+
+
+def log_request(request_id, payload):
+    logger.info(f'{request_id}>>>\n{json.dumps(payload, indent=3)}')
 
