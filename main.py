@@ -41,6 +41,12 @@ default_keyboard_options = [
         "ActionBody": "covid_contact_tracing",
         "Text": "Submit COVID Contact Tracing Info",
         "TextSize": "regular"
+    },
+    {
+        "ActionType": "reply",
+        "ActionBody": "qr_code_covid_contact_tracing",
+        "Text": "Generate QR Code for COVID Contact Tracing",
+        "TextSize": "regular"
     }
 ]
 
