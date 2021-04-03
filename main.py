@@ -52,8 +52,9 @@ def process_event():
         logger.info("REQUEST PAYLOAD>>>\n"+json.dumps(payload, indent=3))
 
         # APPLICATION LOGIC HERE #
+        sender_id = payload['sender']['id']
         # DEFAULT RESPONSE #
-        send_text_message(payload.sender.id, 'Hi, how may I help you?')
+        send_text_message(sender_id, 'Hi, how may I help you?')
 
         # ---------------------- #
 
