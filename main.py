@@ -62,7 +62,10 @@ def process_event():
         sender = payload.get('sender', None)
         # DEFAULT RESPONSE #
         if sender is not None and sender.get('id', None) is not None:
-            send_text_message(sender.get('id'), 'Hi, how may I help you?')
+            sender_id = sender.get('id')
+            user_details = get_user_details(sender_id)
+            user_name = user_details['user']['name'] if user_details['status'] == 0 else "yo"
+            send_text_message(sender_id, f'Hey {user_name}, how may I help you?')
 
         # ---------------------- #
 
@@ -74,18 +77,23 @@ def process_event():
 
 
 # HELPER FUNCTIONS
-def send_text_message(receiver_id, text_message, keyboard={}):
+def send_text_message(receiver_id, text_message):
     send_text_request = {
         "receiver": receiver_id,
         "min_api_version": 1,
         "type": "text",
         "text": text_message,
-        "tracking_data": uuid.uuid4().hex,
-        "keyboard": keyboard
+        "tracking_data": uuid.uuid4().hex
     }
-    log_request("SEND TEXT MESSAGE REPLY", send_text_request)
-    response = requests.post('https://chatapi.viber.com/pa/send_message', json=send_text_request, headers=viber_request_headers)
-    log_request("SEND TEXT MESSAGE API RESPONSE", response)
+    log_request("SEND TEXT MESSAGE", send_text_request)
+    requests.post('https://chatapi.viber.com/pa/send_message', json=send_text_request, headers=viber_request_headers)
+
+
+def get_user_details(user_id):
+    get_user_details_request = {
+        "id": user_id
+    }
+    return requests.post('https://chatapi.viber.com/pa/get_user_details', json=get_user_details_request, headers=viber_request_headers)
 
 
 def log_request(request_id, payload):
