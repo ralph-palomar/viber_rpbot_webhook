@@ -83,8 +83,9 @@ def send_text_message(receiver_id, text_message, keyboard={}):
         "tracking_data": uuid.uuid4().hex,
         "keyboard": keyboard
     }
-    log_request("SEND TEXT MESSAGE RESPONSE", send_text_request)
-    requests.post('https://chatapi.viber.com/pa/send_message', json=send_text_request, headers=viber_request_headers)
+    log_request("SEND TEXT MESSAGE REPLY", send_text_request)
+    response = requests.post('https://chatapi.viber.com/pa/send_message', json=send_text_request, headers=viber_request_headers)
+    log_request("SEND TEXT MESSAGE API RESPONSE", response)
 
 
 def log_request(request_id, payload):
