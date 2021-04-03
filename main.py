@@ -56,18 +56,15 @@ def create_response(response_payload):
 def process_event():
     try:
         payload = request.json
-        log_request("ORIGINATED FROM VIBER", payload)
+        log_payload("ORIGINATED FROM VIBER", payload)
 
         # APPLICATION LOGIC HERE #
         sender = payload.get('sender', None)
         # DEFAULT RESPONSE #
         if sender is not None and sender.get('id', None) is not None:
             sender_id = sender.get('id')
-            user_details = get_user_details(sender_id)
-            user_name = user_details['name'] if user_details['status'] == 0 else "yo"
-            send_text_message(sender_id, f'Hey {user_name}, how may I help you?')
-
-        # ---------------------- #
+            send_default_response(sender_id)
+        # ---------------- #
 
         return create_response({
             "status": "success"
@@ -77,15 +74,30 @@ def process_event():
 
 
 # HELPER FUNCTIONS
-def send_text_message(receiver_id, text_message):
-    send_text_request = {
+def send_default_response(receiver_id):
+    send_text_message(receiver_id, {
         "receiver": receiver_id,
         "min_api_version": 1,
         "type": "text",
-        "text": text_message,
-        "tracking_data": uuid.uuid4().hex
-    }
-    log_request("SEND TEXT MESSAGE", send_text_request)
+        "text": f'Hey beautiful human, how may I help you?',
+        "tracking_data": uuid.uuid4().hex,
+        "keyboard": {
+            "Type": "keyboard",
+            "DefaultHeight": True,
+            "Buttons": [
+                {
+                    "ActionType": "reply",
+                    "ActionBody": "covid contact tracing",
+                    "Text": "Submit Contact Tracing Info",
+                    "TextSize": "regular"
+                }
+            ]
+        }
+    })
+
+
+def send_text_message(receiver_id, send_text_request):
+    log_payload("SEND TEXT MESSAGE", send_text_request)
     requests.post('https://chatapi.viber.com/pa/send_message', json=send_text_request, headers=viber_request_headers)
 
 
@@ -95,17 +107,17 @@ def get_user_details(user_id):
     }
     get_user_details_response = requests.post('https://chatapi.viber.com/pa/get_user_details', json=get_user_details_request, headers=viber_request_headers)
     get_user_details_json_response = get_user_details_response.json()
-    log_request("GET USER DETAILS", get_user_details_json_response)
+    log_payload("GET USER DETAILS", get_user_details_json_response)
     return get_user_details_json_response
 
 
 def get_account_info():
     get_account_info_response = requests.post('https://chatapi.viber.com/pa/get_account_info', json={}, headers=viber_request_headers)
     get_account_info_json_response = get_account_info_response.json()
-    log_request("GET ACCOUNT INFO", get_account_info_json_response)
+    log_payload("GET ACCOUNT INFO", get_account_info_json_response)
     return get_account_info_json_response
 
 
-def log_request(request_id, payload):
-    logger.info(f'{request_id}>>>\n{json.dumps(payload, indent=3)}')
+def log_payload(payload_id, payload):
+    logger.info(f'{payload_id}>>>\n{json.dumps(payload, indent=3)}')
 
