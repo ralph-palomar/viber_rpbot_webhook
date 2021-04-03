@@ -93,7 +93,8 @@ def get_user_details(user_id):
     get_user_details_request = {
         "id": user_id
     }
-    return requests.post('https://chatapi.viber.com/pa/get_user_details', json=get_user_details_request, headers=viber_request_headers)
+    get_user_details_response = requests.post('https://chatapi.viber.com/pa/get_user_details', json=get_user_details_request, headers=viber_request_headers)
+    return get_user_details_response.json
 
 
 def log_request(request_id, payload):
