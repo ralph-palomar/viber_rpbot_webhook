@@ -13,6 +13,13 @@ api = Flask(__name__)
 # SETUP REQUEST PATH
 request_uri = '/api/v1/viber-webhook-rpbot/events'
 
+# SETUP VIBER REQUEST TOKEN
+viber_request_token = os.environ['VIBER_REQUEST_TOKEN']
+viber_request_headers = {
+    "Content-Type": "application/json",
+    "X-Viber-Auth-Token": viber_request_token
+}
+
 # SETUP LOGGERS
 logger = logging.getLogger('waitress')
 handler = RotatingFileHandler(filename=f'{__name__}.log', mode='a', maxBytes=20 * 1024 * 1024, backupCount=5)
@@ -70,15 +77,13 @@ def process_event():
 def send_text_message(receiver_id, text_message):
     send_text_request = {
         "receiver": receiver_id,
+        "min_api_version": 1,
         "type": "text",
-        "sender": {
-            "name": "rpbot"
-        },
         "text": text_message,
         "tracking_data": uuid.uuid4().hex
     }
-    log_request("SEND TEXT REQUEST", send_text_request)
-    requests.post('https://chatapi.viber.com/pa/send_message', json=send_text_request)
+    log_request("SEND TEXT MESSAGE", send_text_request)
+    requests.post('https://chatapi.viber.com/pa/send_message', json=send_text_request, headers=viber_request_headers)
 
 
 def log_request(request_id, payload):
