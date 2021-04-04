@@ -157,8 +157,8 @@ def process_event():
                         send_plain_text_message(sender_id, "Thank you! Generating QR Code!", tracking_id)
                         log_payload("QR CODE DATA", tracking_data_dict)
                         qr_data = json.dumps(tracking_data_dict)
-                        qrcode_f = open(f'/home/ralphp/scripts/qrcodes/{tracking_id}.png', 'wb')
-                        qrcode_f.write(qrcode.make(qr_data).get_image().tobytes())
+                        qrcode_f = open(f'/home/ralphp/scripts/qrcodes/{tracking_id}.png', 'w')
+                        qrcode_f.write(qrcode.make(qr_data))
                         qrcode_f.close()
 
         return create_response({
