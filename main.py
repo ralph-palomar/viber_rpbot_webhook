@@ -120,31 +120,40 @@ def process_event():
                         cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
                         send_plain_text_message(sender_id, "Enter your LAST NAME", tracking_id)
                     elif stage == "last_name":
-                        tracking_data_dict['firstName'] = message['text']
+                        tracking_data_dict['lastName'] = message['text']
                         tracking_data_dict['stage'] = "middle_name"
                         cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
                         send_plain_text_message(sender_id, "Enter your MIDDLE NAME", tracking_id)
                     elif stage == "middle_name":
-                        tracking_data_dict['firstName'] = message['text']
+                        tracking_data_dict['middleName'] = message['text']
+                        tracking_data_dict['stage'] = "unit_house_building"
+                        cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
+                        send_plain_text_message(sender_id, "Enter your UNIT NO./HOUSE NO./BUILDING", tracking_id)
+                    elif stage == "unit_house_building":
+                        tracking_data_dict['unitHouseBldg'] = message['text']
                         tracking_data_dict['stage'] = "street_address"
                         cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
                         send_plain_text_message(sender_id, "Enter your STREET ADDRESS", tracking_id)
                     elif stage == "street_address":
-                        tracking_data_dict['firstName'] = message['text']
+                        tracking_data_dict['streetAddress'] = message['text']
                         tracking_data_dict['stage'] = "city"
                         cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
                         send_plain_text_message(sender_id, "Enter your CITY", tracking_id)
                     elif stage == "city":
-                        tracking_data_dict['firstName'] = message['text']
-                        tracking_data_dict['stage'] = "zip code"
+                        tracking_data_dict['city'] = message['text']
+                        tracking_data_dict['stage'] = "zip_code"
                         cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
                         send_plain_text_message(sender_id, "Enter your ZIP CODE", tracking_id)
                     elif stage == "zip_code":
-                        tracking_data_dict['firstName'] = message['text']
+                        tracking_data_dict['zipCode'] = message['text']
                         tracking_data_dict['stage'] = "done"
                         cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
                         send_plain_text_message(sender_id, "Enter your CONTACT NUMBER", tracking_id)
                     else:
+                        tracking_data_dict['contactNumber'] = message['text']
+                        tracking_data_dict['stage'] = "done"
+                        cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
+                        send_plain_text_message(sender_id, "Complete! Generating QR Code!", tracking_id)
                         logger.info(json.dumps(tracking_data_dict))
 
         return create_response({
