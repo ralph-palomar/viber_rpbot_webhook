@@ -49,7 +49,7 @@ default_keyboard_options = [
     },
     {
         "ActionType": "reply",
-        "ActionBody": "qr_code_covid_contact_tracing",
+        "ActionBody": "qr_code_covid",
         "Text": "Generate QR Code for COVID Contact Tracing",
         "TextSize": "regular"
     }
@@ -83,15 +83,24 @@ def process_event():
         event = payload.get('event', None)
         sender = payload.get('sender', None)
         message = payload.get('message', None)
+        tracking_data = payload.get('tracking_data', None)
 
-        # DEFAULT RESPONSE #
         if event is not None and sender is not None and sender.get('id', None) is not None:
             sender_id = sender.get('id')
             if message is not None and any([option['ActionBody'] != message['text'] for option in default_keyboard_options]):
-                send_default_response(sender_id)
+                tracking_id = send_default_response(sender_id, tracking_data)
             else:
                 if message['text'] == "covid_contact_tracing":
                     send_plain_text_message(sender_id, "Test Contact Tracing")
+                if message['text'] == "qr_code_covid":
+                    tracking_id = send_plain_text_message(sender_id, "COVID QR Code Generator")
+                    cached_tracking_data = cache.get(tracking_id)
+                    if cached_tracking_data is None:
+                        tracking_data = {
+                            "id": tracking_id,
+                            "op": "qr_code_covid"
+                        }
+                        send_plain_text_message(sender_id, "Enter your LAST NAME", tracking_id)
 
         return create_response({
             "status": "success"
@@ -102,29 +111,31 @@ def process_event():
 
 
 # HELPER FUNCTIONS
-def send_default_response(receiver_id):
+def send_default_response(receiver_id, tracking_id=uuid.uuid4().hex):
     send_text_message({
         "receiver": receiver_id,
         "min_api_version": 1,
         "type": "text",
         "text": f'Hey beautiful human, how may I help you?',
-        "tracking_data": uuid.uuid4().hex,
+        "tracking_data": tracking_id,
         "keyboard": {
             "Type": "keyboard",
             "DefaultHeight": True,
             "Buttons": default_keyboard_options
         }
     })
+    return tracking_id
 
 
-def send_plain_text_message(receiver_id, text_message):
+def send_plain_text_message(receiver_id, text_message, tracking_id=uuid.uuid4().hex):
     send_text_message({
         "receiver": receiver_id,
         "min_api_version": 1,
         "type": "text",
         "text": text_message,
-        "tracking_data": uuid.uuid4().hex,
+        "tracking_data": tracking_id,
     })
+    return tracking_id
 
 
 def send_text_message(send_text_request):
