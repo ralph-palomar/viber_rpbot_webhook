@@ -2,3 +2,5 @@ Flask~=1.1.2
 waitress~=1.4.4
 Paste~=3.5.0
 requests~=2.25.1
+django-qrcode~=0.3
+pymemcache~=3.4.1

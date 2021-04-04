@@ -2,13 +2,18 @@ from flask import Flask, request, jsonify
 from waitress import serve
 from paste.translogger import TransLogger
 from logging.handlers import RotatingFileHandler
+from pymemcache.client import base
 import logging
 import os
 import json
 import uuid
 import requests
+import qrcode
 
 api = Flask(__name__)
+
+# SETUP CACHE CLIENT
+cache = base.Client(('localhost', 11211))
 
 # SETUP REQUEST PATH
 request_uri = '/api/v1/viber-webhook-rpbot/events'
