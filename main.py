@@ -87,18 +87,15 @@ def process_event():
         if event is not None and sender is not None and sender.get('id', None) is not None and message is not None:
             sender_id = sender.get('id')
             tracking_data = message.get('tracking_data', None)
+
             if tracking_data is None and event == "message" and message is not None and any([option['ActionBody'] != message['text'] for option in default_keyboard_options]):
                 tracking_id = send_default_response(sender_id, tracking_id=None)
                 cache.set(key=tracking_id, value={}, expire=300)
 
             else:
-                cached_data = cache.get(tracking_data)
-                operation = None
-                cached_tracking_data = None
-
-                if cached_data is not None:
-                    cached_tracking_data = json.loads(cached_data.decode('utf-8'))
-                    operation = cached_tracking_data.get('op', None)
+                cached_tracking_data = cache.get(tracking_data)
+                tracking_data_dict = json.loads(cached_tracking_data.decode('utf-8')) if cached_tracking_data is not None else None
+                operation = tracking_data_dict.get('op', None)
 
                 if cached_tracking_data is not None and operation is None:
                     if message['text'] == "covid_contact_tracing":
