@@ -87,29 +87,24 @@ def process_event():
 
         if event is not None and sender is not None and sender.get('id', None) is not None:
             sender_id = sender.get('id')
-            if event == "message" and message is not None and any([option['ActionBody'] != message['text'] for option in default_keyboard_options]) and tracking_data is None:
-                tracking_id = send_default_response(sender_id, tracking_data)
-                cached_tracking_data = {
-                    "id": tracking_id
-                }
-                cache.set(key=tracking_id, value=cached_tracking_data, expire=300)
+            if tracking_data is None and event == "message" and message is not None and any([option['ActionBody'] != message['text'] for option in default_keyboard_options]):
+                tracking_id = send_default_response(sender_id, tracking_data=None)
+                cache.set(key=tracking_id, value={}, expire=300)
 
             else:
                 cached_tracking_data = cache.get(tracking_data)
                 operation = cached_tracking_data.get('op', None)
 
-                if operation is None:
+                if cached_tracking_data is not None and operation is None:
                     if message['text'] == "covid_contact_tracing":
-                        send_plain_text_message(sender_id, "Test Contact Tracing")
+                        send_plain_text_message(sender_id, "Submit COVID Contact Tracing Info", tracking_data)
                     if message['text'] == "qr_code_covid":
-                        tracking_id = send_plain_text_message(sender_id, "COVID QR Code Generator")
-                        if cached_tracking_data is None:
-                            cached_tracking_data = {
-                                "id": tracking_id,
-                                "op": "qr_code_covid"
-                            }
-                            cache.set(key=tracking_id, value=cached_tracking_data, expire=300)
-                            send_plain_text_message(sender_id, "Enter your LAST NAME", tracking_id)
+                        tracking_id = send_plain_text_message(sender_id, "COVID QR Code Generator", tracking_data)
+                        cached_tracking_data = {
+                            "op": "qr_code_covid"
+                        }
+                        cache.set(key=tracking_id, value=cached_tracking_data, expire=300)
+                        send_plain_text_message(sender_id, "Enter your LAST NAME", tracking_id)
                 else:
                     if operation == "qr_code_covid":
                         logger.info("TEST")
