@@ -94,8 +94,7 @@ def process_event():
 
             else:
                 cached_tracking_data = cache.get(tracking_data, None)
-                logger.info(cached_tracking_data.decode('utf-8'))
-                tracking_data_dict = json.loads(cached_tracking_data.decode('utf-8')) if cached_tracking_data is not None else {}
+                tracking_data_dict = json.loads(cached_tracking_data) if cached_tracking_data is not None else {}
                 operation = tracking_data_dict.get('op', None)
 
                 if cached_tracking_data is None and operation is None:
