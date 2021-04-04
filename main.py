@@ -87,20 +87,31 @@ def process_event():
 
         if event is not None and sender is not None and sender.get('id', None) is not None:
             sender_id = sender.get('id')
-            if message is not None and any([option['ActionBody'] != message['text'] for option in default_keyboard_options]):
+            if message is not None and any([option['ActionBody'] != message['text'] for option in default_keyboard_options] and tracking_data is None):
                 tracking_id = send_default_response(sender_id, tracking_data)
+                cached_tracking_data = {
+                    "id": tracking_id
+                }
+                cache.set(key=tracking_id, value=cached_tracking_data, expire=300)
+
             else:
-                if message['text'] == "covid_contact_tracing":
-                    send_plain_text_message(sender_id, "Test Contact Tracing")
-                if message['text'] == "qr_code_covid":
-                    tracking_id = send_plain_text_message(sender_id, "COVID QR Code Generator")
-                    cached_tracking_data = cache.get(tracking_id)
-                    if cached_tracking_data is None:
-                        tracking_data = {
-                            "id": tracking_id,
-                            "op": "qr_code_covid"
-                        }
-                        send_plain_text_message(sender_id, "Enter your LAST NAME", tracking_id)
+                cached_tracking_data = cache.get(tracking_data)
+                operation = cached_tracking_data.get('op', None)
+
+                if operation is None:
+                    if message['text'] == "covid_contact_tracing":
+                        send_plain_text_message(sender_id, "Test Contact Tracing")
+                    if message['text'] == "qr_code_covid":
+                        tracking_id = send_plain_text_message(sender_id, "COVID QR Code Generator")
+                        if cached_tracking_data is None:
+                            cached_tracking_data = {
+                                "id": tracking_id,
+                                "op": "qr_code_covid"
+                            }
+                            send_plain_text_message(sender_id, "Enter your LAST NAME", tracking_id)
+                else:
+                    if operation == "qr_code_covid":
+                        logger.info("TEST")
 
         return create_response({
             "status": "success"
