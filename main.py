@@ -87,7 +87,7 @@ def process_event():
 
         if event is not None and sender is not None and sender.get('id', None) is not None:
             sender_id = sender.get('id')
-            if message is not None and any([option['ActionBody'] != message['text'] for option in default_keyboard_options] and tracking_data is None):
+            if message is not None and any([option['ActionBody'] != message['text'] for option in default_keyboard_options]) and tracking_data is None:
                 tracking_id = send_default_response(sender_id, tracking_data)
                 cached_tracking_data = {
                     "id": tracking_id
