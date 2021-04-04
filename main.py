@@ -103,6 +103,7 @@ def process_event():
                     elif message['text'] == "qr_code_covid":
                         tracking_id = send_plain_text_message(sender_id, "Started COVID QR Code Generator", tracking_data)
                         new_cached_tracking_data = {
+                            "id": tracking_id,
                             "op": "qr_code_covid",
                             "stage": "first_name"
                         }
@@ -111,7 +112,13 @@ def process_event():
                     else:
                         send_default_response(sender_id, tracking_id=None)
                 else:
-                    logger.info(json.dumps(tracking_data_dict))
+                    stage = tracking_data_dict['stage']
+                    if stage == "first_name":
+                        tracking_id = tracking_data_dict['id']
+                        tracking_data_dict['firstName'] = message['text']
+                        tracking_data_dict['stage'] = "last_name"
+                        cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
+                        send_plain_text_message(sender_id, "Enter your LAST NAME", tracking_id)
 
         return create_response({
             "status": "success"
