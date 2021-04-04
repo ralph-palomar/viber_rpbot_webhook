@@ -4,3 +4,4 @@ Paste~=3.5.0
 requests~=2.25.1
 pymemcache~=3.4.1
 qrcode~=6.1
+pillow~=8.2.0
