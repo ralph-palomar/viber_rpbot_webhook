@@ -157,7 +157,9 @@ def process_event():
                         send_plain_text_message(sender_id, "Thank you! Generating QR Code!", tracking_id)
                         log_payload("QR CODE DATA", tracking_data_dict)
                         qr_data = json.dumps(tracking_data_dict)
-                        qrcode.make(qr_data).save(f'/home/ralphp/scripts/qrcodes/{tracking_id}.png')
+                        qrcode.make(qr_data).save(f'{os.environ["APP_HOME"]}/qrcodes/{tracking_id}.png')
+                        media_url = f'{os.environ["ALLOWED_ORIGIN"]}/qrcodes/{tracking_id}.png'
+                        send_picture_message(sender_id, "Here's your QR code!", media_url, tracking_id=None)
 
         return create_response({
             "status": "success"
@@ -192,6 +194,19 @@ def send_plain_text_message(receiver_id, text_message, tracking_id):
         "min_api_version": 1,
         "type": "text",
         "text": text_message,
+        "tracking_data": tracking_data,
+    })
+    return tracking_data
+
+
+def send_picture_message(receiver_id, text_message, media_url, tracking_id):
+    tracking_data = uuid.uuid4().hex if tracking_id is None else tracking_id
+    send_text_message({
+        "receiver": receiver_id,
+        "min_api_version": 1,
+        "type": "picture",
+        "text": text_message,
+        "media": media_url,
         "tracking_data": tracking_data,
     })
     return tracking_data
