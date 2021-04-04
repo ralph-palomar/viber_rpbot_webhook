@@ -94,6 +94,7 @@ def process_event():
 
             else:
                 cached_tracking_data = cache.get(tracking_data, None)
+                logger.info(cached_tracking_data.decode('utf-8'))
                 tracking_data_dict = json.loads(cached_tracking_data.decode('utf-8')) if cached_tracking_data is not None else {}
                 operation = tracking_data_dict.get('op', None)
 
@@ -101,7 +102,7 @@ def process_event():
                     if message['text'] == "covid_contact_tracing":
                         send_plain_text_message(sender_id, "Submit COVID Contact Tracing Info", tracking_data)
                     elif message['text'] == "qr_code_covid":
-                        tracking_id = send_plain_text_message(sender_id, "COVID QR Code Generator", tracking_data)
+                        tracking_id = send_plain_text_message(sender_id, "Started COVID QR Code Generator", tracking_data)
                         new_cached_tracking_data = {
                             "op": "qr_code_covid"
                         }
