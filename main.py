@@ -159,7 +159,7 @@ def process_event():
                         qr_data = json.dumps(tracking_data_dict)
                         qrcode.make(qr_data).save(f'{os.environ["APP_HOME"]}/qrcodes/{tracking_id}.png')
                         media_url = f'{os.environ["ALLOWED_ORIGIN"]}/qrcodes/{tracking_id}.png'
-                        send_picture_message(sender_id, "Here's your QR code!", media_url, tracking_id=None)
+                        send_picture_message(sender_id, "Here's your QR code! Please save this file!", media_url, tracking_id=None)
 
         return create_response({
             "status": "success"
