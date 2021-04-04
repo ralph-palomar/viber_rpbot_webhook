@@ -110,6 +110,8 @@ def process_event():
                         send_plain_text_message(sender_id, "Enter your FIRST NAME", tracking_id)
                     else:
                         send_default_response(sender_id, tracking_id=None)
+                else:
+                    logger.info(json.dumps(tracking_data_dict))
 
         return create_response({
             "status": "success"
