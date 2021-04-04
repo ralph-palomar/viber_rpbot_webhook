@@ -9,6 +9,7 @@ import json
 import uuid
 import requests
 import qrcode
+import qrcode.image
 
 api = Flask(__name__)
 
@@ -153,7 +154,7 @@ def process_event():
                         tracking_data_dict['contactNumber'] = message['text']
                         tracking_data_dict['stage'] = "done"
                         cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
-                        send_plain_text_message(sender_id, "Complete! Generating QR Code!", tracking_id)
+                        send_plain_text_message(sender_id, "Thank you! Generating QR Code!", tracking_id)
                         log_payload("QR CODE DATA", tracking_data_dict)
                         qr_data = json.dumps(tracking_data_dict)
                         img_bytes = qrcode.make(qr_data).get_image().tobytes()
