@@ -156,8 +156,10 @@ def process_event():
                         send_plain_text_message(sender_id, "Complete! Generating QR Code!", tracking_id)
                         log_payload("QR CODE DATA", tracking_data_dict)
                         qr_data = json.dumps(tracking_data_dict)
-                        img = qrcode.make(qr_data)
-                        logger.info(img)
+                        img_bytes = qrcode.make(qr_data).get_image().tobytes()
+                        qr_img_f = open(f'~/qrcodes/{tracking_id}.png', 'w')
+                        qr_img_f.write(img_bytes)
+                        qr_img_f.close()
 
         return create_response({
             "status": "success"
