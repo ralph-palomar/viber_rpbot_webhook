@@ -111,31 +111,33 @@ def process_event():
 
 
 # HELPER FUNCTIONS
-def send_default_response(receiver_id, tracking_id=uuid.uuid4().hex):
+def send_default_response(receiver_id, tracking_id):
+    tracking_data = uuid.uuid4().hex if tracking_id is None else tracking_id
     send_text_message({
         "receiver": receiver_id,
         "min_api_version": 1,
         "type": "text",
         "text": f'Hey beautiful human, how may I help you?',
-        "tracking_data": tracking_id,
+        "tracking_data": tracking_data,
         "keyboard": {
             "Type": "keyboard",
             "DefaultHeight": True,
             "Buttons": default_keyboard_options
         }
     })
-    return tracking_id
+    return tracking_data
 
 
-def send_plain_text_message(receiver_id, text_message, tracking_id=uuid.uuid4().hex):
+def send_plain_text_message(receiver_id, text_message, tracking_id):
+    tracking_data = uuid.uuid4().hex if tracking_id is None else tracking_id
     send_text_message({
         "receiver": receiver_id,
         "min_api_version": 1,
         "type": "text",
         "text": text_message,
-        "tracking_data": tracking_id,
+        "tracking_data": tracking_data,
     })
-    return tracking_id
+    return tracking_data
 
 
 def send_text_message(send_text_request):
