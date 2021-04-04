@@ -112,6 +112,7 @@ def process_event():
                     else:
                         send_default_response(sender_id, tracking_id=None)
                 else:
+                    logger.info(json.dumps(tracking_data_dict))
                     stage = tracking_data_dict['stage']
                     if stage == "first_name":
                         tracking_id = tracking_data_dict['id']
