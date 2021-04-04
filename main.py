@@ -112,14 +112,40 @@ def process_event():
                     else:
                         send_default_response(sender_id, tracking_id=None)
                 else:
-                    logger.info(json.dumps(tracking_data_dict))
                     stage = tracking_data_dict['stage']
+                    tracking_id = tracking_data_dict['id']
                     if stage == "first_name":
-                        tracking_id = tracking_data_dict['id']
                         tracking_data_dict['firstName'] = message['text']
                         tracking_data_dict['stage'] = "last_name"
                         cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
                         send_plain_text_message(sender_id, "Enter your LAST NAME", tracking_id)
+                    elif stage == "last_name":
+                        tracking_data_dict['firstName'] = message['text']
+                        tracking_data_dict['stage'] = "middle_name"
+                        cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
+                        send_plain_text_message(sender_id, "Enter your MIDDLE NAME", tracking_id)
+                    elif stage == "middle_name":
+                        tracking_data_dict['firstName'] = message['text']
+                        tracking_data_dict['stage'] = "street_address"
+                        cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
+                        send_plain_text_message(sender_id, "Enter your STREET ADDRESS", tracking_id)
+                    elif stage == "street_address":
+                        tracking_data_dict['firstName'] = message['text']
+                        tracking_data_dict['stage'] = "city"
+                        cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
+                        send_plain_text_message(sender_id, "Enter your CITY", tracking_id)
+                    elif stage == "city":
+                        tracking_data_dict['firstName'] = message['text']
+                        tracking_data_dict['stage'] = "zip code"
+                        cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
+                        send_plain_text_message(sender_id, "Enter your ZIP CODE", tracking_id)
+                    elif stage == "zip_code":
+                        tracking_data_dict['firstName'] = message['text']
+                        tracking_data_dict['stage'] = "done"
+                        cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
+                        send_plain_text_message(sender_id, "Enter your CONTACT NUMBER", tracking_id)
+                    else:
+                        logger.info(json.dumps(tracking_data_dict))
 
         return create_response({
             "status": "success"
