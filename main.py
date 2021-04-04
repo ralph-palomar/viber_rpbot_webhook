@@ -97,19 +97,18 @@ def process_event():
                 tracking_data_dict = json.loads(cached_tracking_data.decode('utf-8')) if cached_tracking_data is not None else {}
                 operation = tracking_data_dict.get('op', None)
 
-                if cached_tracking_data is not None and operation is None:
+                if cached_tracking_data is None and operation is None:
                     if message['text'] == "covid_contact_tracing":
                         send_plain_text_message(sender_id, "Submit COVID Contact Tracing Info", tracking_data)
-                    if message['text'] == "qr_code_covid":
+                    elif message['text'] == "qr_code_covid":
                         tracking_id = send_plain_text_message(sender_id, "COVID QR Code Generator", tracking_data)
                         new_cached_tracking_data = {
                             "op": "qr_code_covid"
                         }
                         cache.set(key=tracking_id, value=new_cached_tracking_data, expire=300)
                         send_plain_text_message(sender_id, "Enter your LAST NAME", tracking_id)
-                else:
-                    if operation == "qr_code_covid":
-                        logger.info("TEST")
+                    else:
+                        send_default_response(sender_id, tracking_id=None)
 
         return create_response({
             "status": "success"
