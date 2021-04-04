@@ -154,7 +154,10 @@ def process_event():
                         tracking_data_dict['stage'] = "done"
                         cache.set(key=tracking_id, value=json.dumps(tracking_data_dict), expire=300)
                         send_plain_text_message(sender_id, "Complete! Generating QR Code!", tracking_id)
-                        logger.info(json.dumps(tracking_data_dict))
+                        log_payload("QR CODE DATA", tracking_data_dict)
+                        qr_data = json.dumps(tracking_data_dict)
+                        img = qrcode.make(qr_data)
+                        logger.info(img)
 
         return create_response({
             "status": "success"
