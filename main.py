@@ -50,7 +50,7 @@ default_keyboard_options = [
         "TextHAlign": "center",
         "TextVAlign": "middle",
         "ActionType": "reply",
-        "ActionBody": "ASIAN",
+        "ActionBody": "GENERATE_QR",
         "BgColor": "#f7bb3f",
         "Image": "https://s18.postimg.org/9tncn0r85/sushi.png"
     }
