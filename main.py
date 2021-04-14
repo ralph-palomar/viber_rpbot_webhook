@@ -44,15 +44,9 @@ if __name__ == '__main__':
 default_keyboard_options = [
     {
         "ActionType": "reply",
-        "ActionBody": "covid_contact_tracing",
-        "Text": "Submit COVID Contact Tracing Info",
-        "TextSize": "regular"
-    },
-    {
-        "ActionType": "reply",
-        "ActionBody": "qr_code_covid",
-        "Text": "Generate QR Code for COVID Contact Tracing",
-        "TextSize": "regular"
+        "ActionBody": "qr_code_generator",
+        "Text": "Generate your own QR Code",
+        "TextSize": "medium"
     }
 ]
 
