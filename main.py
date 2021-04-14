@@ -67,7 +67,7 @@ default_keyboard_options = [
     {
         "Columns": 2,
         "Rows": 2,
-        "Text": "<br><font color=\"#494E67\"><b>COVID_UPDATES</b></font>",
+        "Text": "<br><font color=\"#494E67\"><b>COVID UPDATES</b></font>",
         "TextSize": "large",
         "TextHAlign": "center",
         "TextVAlign": "middle",
