@@ -43,10 +43,16 @@ if __name__ == '__main__':
 # GLOBAL VARIABLES
 default_keyboard_options = [
     {
+        "Columns": 2,
+        "Rows": 2,
+        "Text": "<br><font color=\"#494E67\"><b>GENERATE QR CODE</b></font>",
+        "TextSize": "large",
+        "TextHAlign": "center",
+        "TextVAlign": "middle",
         "ActionType": "reply",
-        "ActionBody": "qr_code_generator",
-        "Text": "Generate your own QR Code",
-        "TextSize": "medium"
+        "ActionBody": "ASIAN",
+        "BgColor": "#f7bb3f",
+        "Image": "https://s18.postimg.org/9tncn0r85/sushi.png"
     }
 ]
 
