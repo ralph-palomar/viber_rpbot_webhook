@@ -52,6 +52,28 @@ default_keyboard_options = [
         "ActionType": "reply",
         "ActionBody": "GENERATE_QR",
         "BgColor": "#f7bb3f"
+    },
+    {
+        "Columns": 2,
+        "Rows": 2,
+        "Text": "<br><font color=\"#494E67\"><b>PLAY GAMES</b></font>",
+        "TextSize": "large",
+        "TextHAlign": "center",
+        "TextVAlign": "middle",
+        "ActionType": "reply",
+        "ActionBody": "PLAY_GAME",
+        "BgColor": "#f7bb3f"
+    },
+    {
+        "Columns": 2,
+        "Rows": 2,
+        "Text": "<br><font color=\"#494E67\"><b>COVID_UPDATES</b></font>",
+        "TextSize": "large",
+        "TextHAlign": "center",
+        "TextVAlign": "middle",
+        "ActionType": "reply",
+        "ActionBody": "COVID_UPDATES",
+        "BgColor": "#f7bb3f"
     }
 ]
 
